@@ -16,6 +16,7 @@
             justify-content: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #2980b9, #6dd5fa);
+            overflow: hidden;
         }
 
         .weather-container {
@@ -24,13 +25,25 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 0.5s ease;
+            animation: fadeIn 2s ease;
+            max-width: 90%;
+            width: 400px;
+        }
+
+        .weather-container h1,
+        .weather-container h2 {
+            margin: 0;
+            color: #333;
         }
 
         .weather-container h1 {
-            font-size: 2em;
-            margin: 0;
-            color: #333;
+            font-size: 2.5em;
+        }
+
+        .weather-container h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #555;
         }
 
         .weather-container p {
@@ -50,24 +63,23 @@
             color: red;
         }
 
-        select {
-            padding: 8px;
+        select,
+        input[type="submit"] {
+            padding: 10px;
             font-size: 1em;
             margin-bottom: 10px;
             border-radius: 5px;
             border: none;
             background: #ecf0f1;
             color: #555;
+            width: 100%;
+            max-width: 300px;
         }
 
         input[type="submit"] {
-            padding: 10px 20px;
-            font-size: 1em;
             background-color: #2ecc71;
             color: white;
-            border: none;
             cursor: pointer;
-            border-radius: 5px;
             transition: background-color 0.3s ease;
         }
 
@@ -86,16 +98,35 @@
                 transform: translateY(0);
             }
         }
+
+        @media (max-width: 600px) {
+            .weather-container {
+                width: 80%;
+                padding: 15px;
+            }
+
+            .weather-container h1 {
+                font-size: 2em;
+            }
+
+            .weather-container p {
+                font-size: 1em;
+            }
+
+            input[type="submit"],
+            select {
+                max-width: 100%;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="weather-container">
-        <h1>Weather App</h1>
-        <p> (Note: all these values are not accurate , please check weather app for more accurate
-            information)</p>
-        <form id="weather-form">
-            <select id="city-select">
+        <h1>Weather Info</h1>
+        <h2>By Pavan</h2>
+        <form id="weather-form" aria-label="Weather form">
+            <select id="city-select" aria-label="City selection">
                 <option value="27.1767,78.0081">Agra</option>
                 <option value="23.0225,72.5714">Ahmedabad</option>
                 <option value="25.4358,81.8463">Allahabad</option>
@@ -123,8 +154,9 @@
                 <option value="22.3072,73.1812">Vadodara</option>
                 <option value="25.3176,82.9739">Varanasi</option>
             </select>
-            <input type="submit" value="Get Weather">
+            <input type="submit" value="Check Weather" aria-label="Check weather">
         </form>
+        <p id="loading" style="display: none;">Loading...</p>
         <p id="location">Location: </p>
         <p id="temperature">Temperature: </p>
         <p id="description">Description: </p>
@@ -135,56 +167,61 @@
         <p id="visibility">Visibility: </p>
         <p id="uv">UV Index: </p>
         <p id="error" class="error"></p>
+        <p>These results might not be accurate at the time</p>
     </div>
 
     <script>
         document.getElementById('weather-form').addEventListener('submit', function (e) {
             e.preventDefault();
-            var city = document.getElementById('city-select').value;
-            var apiKey = '972f9a349f7747858bb113631240806 ';
-            var apiUrl = 'https://api.weatherapi.com/v1/current.json?key=' + apiKey + '&q=' + city + '&aqi=no';
+            const city = document.getElementById('city-select').value;
+            const apiKey = '972f9a349f7747858bb113631240806';
+            const apiUrl = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=no`;
+
+            displayLoading(true);
+            clearWeatherInfo();
+
             fetch(apiUrl)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
-                    console.log(data);
-                    var location = data.location.name + ', ' + data.location.country;
-                    var temperature = data.current.temp_c + '°C';
-                    var description = data.current.condition.text;
-                    var wind = 'Wind: ' + data.current.wind_kph + ' kph ' + data.current.wind_dir;
-                    var humidity = 'Humidity: ' + data.current.humidity + '%';
-                    var cloud = 'Cloud: ' + data.current.cloud + '%';
-                    var pressure = 'Pressure: ' + data.current.pressure_mb + ' mb';
-                    var visibility = 'Visibility: ' + data.current.vis_km + ' km';
-                    var uv = 'UV Index: ' + data.current.uv;
-                    document.querySelector('.weather-container').classList.add('show');
-                    
-                    document.getElementById('location').textContent = location;
-                    document.getElementById('temperature').textContent = temperature;
-                    document.getElementById('description').textContent = description;
-                    document.getElementById('wind').textContent = wind;
-                    document.getElementById('humidity').textContent = humidity;
-                    document.getElementById('cloud').textContent = cloud;
-                    document.getElementById('pressure').textContent = pressure;
-                    document.getElementById('visibility').textContent = visibility;
-                    document.getElementById('uv').textContent = uv;
-                    document.getElementById('error').textContent = '';
+                    displayWeatherInfo(data);
+                    displayLoading(false);
                 })
                 .catch(error => {
-                    console.log('Error fetching weather data:', error);
-                    document.getElementById('location').textContent = 'Location: ';
-                    document.getElementById('temperature').textContent = 'Temperature: ';
-                    document.getElementById('description').textContent = 'Description: ';
-                    document.getElementById('wind').textContent = 'Wind: ';
-                    document.getElementById('humidity').textContent = 'Humidity: ';
-                    document.getElementById('cloud').textContent = 'Cloud: ';
-                    document.getElementById('pressure').textContent = 'Pressure: ';
-                    document.getElementById('visibility').textContent = 'Visibility: ';
-                    document.getElementById('uv').textContent = 'UV Index: ';
-                    document.getElementById('error').textContent = 'Error fetching weather data. Please try again later.';
+                    displayError('Error fetching weather data. Please try again later.');
+                    displayLoading(false);
                 });
         });
-    </script>
 
+        function displayLoading(isLoading) {
+            document.getElementById('loading').style.display = isLoading ? 'block' : 'none';
+        }
+
+        function clearWeatherInfo() {
+            const fields = ['location', 'temperature', 'description', 'wind', 'humidity', 'cloud', 'pressure', 'visibility', 'uv', 'error'];
+            fields.forEach(field => document.getElementById(field).textContent = '');
+        }
+
+        function displayWeatherInfo(data) {
+            document.getElementById('location').textContent = `Location: ${data.location.name}, ${data.location.country}`;
+            document.getElementById('temperature').textContent = `Temperature: ${data.current.temp_c}°C`;
+            document.getElementById('description').textContent = `Description: ${data.current.condition.text}`;
+            document.getElementById('wind').textContent = `Wind: ${data.current.wind_kph} kph ${data.current.wind_dir}`;
+            document.getElementById('humidity').textContent = `Humidity: ${data.current.humidity}%`;
+            document.getElementById('cloud').textContent = `Cloud: ${data.current.cloud}%`;
+            document.getElementById('pressure').textContent = `Pressure: ${data.current.pressure_mb} mb`;
+            document.getElementById('visibility').textContent = `Visibility: ${data.current.vis_km} km`;
+            document.getElementById('uv').textContent = `UV Index: ${data.current.uv}`;
+        }
+
+        function displayError(message) {
+            document.getElementById('error').textContent = message;
+        }
+    </script>
 </body>
 
 </html>
