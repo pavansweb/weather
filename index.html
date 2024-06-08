@@ -1,37 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
     <style>
-        body, html {
+        body,
+        html {
             margin: 0;
             padding: 0;
             height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: Arial, sans-serif;
-            background: #f0f0f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2980b9, #6dd5fa);
         }
 
         .weather-container {
             text-align: center;
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease;
         }
 
         .weather-container h1 {
             font-size: 2em;
             margin: 0;
+            color: #333;
         }
 
         .weather-container p {
             margin: 10px 0;
             font-size: 1.2em;
+            color: #555;
+        }
+
+        #temperature {
+            background-color: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
         }
 
         .error {
@@ -42,86 +54,137 @@
             padding: 8px;
             font-size: 1em;
             margin-bottom: 10px;
+            border-radius: 5px;
+            border: none;
+            background: #ecf0f1;
+            color: #555;
         }
 
         input[type="submit"] {
-            padding: 8px 16px;
+            padding: 10px 20px;
             font-size: 1em;
-            background-color: #4CAF50;
+            background-color: #2ecc71;
             color: white;
             border: none;
             cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #27ae60;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="weather-container">
-      <p class="error"> (Note: all these values are not accurate , please check weather app for more accurate imformation)</p>
+        <h1>Weather App</h1>
+        <p> (Note: all these values are not accurate , please check weather app for more accurate
+            information)</p>
         <form id="weather-form">
             <select id="city-select">
-              <option value="27.1767,78.0081">Agra</option>
-              <option value="23.0225,72.5714">Ahmedabad</option>
-              <option value="25.4358,81.8463">Allahabad</option>
-              <option value="31.6340,74.8723">Amritsar</option>
-              <option value="19.8762,75.3433">Aurangabad</option>
-              <option value="12.9334,77.5609">Bangalore (Bengaluru)</option>
-              <option value="23.2599,77.4126">Bhopal</option>
-              <option value="30.7333,76.7794">Chandigarh</option>
-              <option value="13.0827,80.2707">Chennai</option>
-              <option value="11.0168,76.9558">Coimbatore</option>
-              <option value="28.6139,77.2090">Delhi</option>
-              <option value="17.3850,78.4867">Hyderabad</option>
-              <option value="22.7196,75.8577">Indore</option>
-              <option value="26.9124,75.7873">Jaipur</option>
-              <option value="26.4499,80.3319">Kanpur</option>
-              <option value="9.9312,76.2673">Kochi</option>
-              <option value="22.5726,88.3639">Kolkata</option>
-              <option value="26.8467,80.9462">Lucknow</option>
-              <option value="30.9010,75.8573">Ludhiana</option>
-              <option value="19.0760,72.8777">Mumbai</option>
-              <option value="21.1458,79.0882">Nagpur</option>
-              <option value="25.5941,85.1376">Patna</option>
-              <option value="18.5204,73.8567">Pune</option>
-              <option value="21.1702,72.8311">Surat</option>
-              <option value="22.3072,73.1812">Vadodara</option>
-              <option value="25.3176,82.9739">Varanasi</option>
-
-             
+                <option value="27.1767,78.0081">Agra</option>
+                <option value="23.0225,72.5714">Ahmedabad</option>
+                <option value="25.4358,81.8463">Allahabad</option>
+                <option value="31.6340,74.8723">Amritsar</option>
+                <option value="19.8762,75.3433">Aurangabad</option>
+                <option value="12.9334,77.5609">Bangalore (Bengaluru)</option>
+                <option value="23.2599,77.4126">Bhopal</option>
+                <option value="30.7333,76.7794">Chandigarh</option>
+                <option value="13.0827,80.2707">Chennai</option>
+                <option value="11.0168,76.9558">Coimbatore</option>
+                <option value="28.6139,77.2090">Delhi</option>
+                <option value="17.3850,78.4867">Hyderabad</option>
+                <option value="22.7196,75.8577">Indore</option>
+                <option value="26.9124,75.7873">Jaipur</option>
+                <option value="26.4499,80.3319">Kanpur</option>
+                <option value="9.9312,76.2673">Kochi</option>
+                <option value="22.5726,88.3639">Kolkata</option>
+                <option value="26.8467,80.9462">Lucknow</option>
+                <option value="30.9010,75.8573">Ludhiana</option>
+                <option value="19.0760,72.8777">Mumbai</option>
+                <option value="21.1458,79.0882">Nagpur</option>
+                <option value="25.5941,85.1376">Patna</option>
+                <option value="18.5204,73.8567">Pune</option>
+                <option value="21.1702,72.8311">Surat</option>
+                <option value="22.3072,73.1812">Vadodara</option>
+                <option value="25.3176,82.9739">Varanasi</option>
             </select>
             <input type="submit" value="Get Weather">
         </form>
         <p id="location">Location: </p>
         <p id="temperature">Temperature: </p>
         <p id="description">Description: </p>
+        <p id="wind">Wind: </p>
+        <p id="humidity">Humidity: </p>
+        <p id="cloud">Cloud: </p>
+        <p id="pressure">Pressure: </p>
+        <p id="visibility">Visibility: </p>
+        <p id="uv">UV Index: </p>
         <p id="error" class="error"></p>
     </div>
+
     <script>
-        async function fetchWeather(latitude, longitude) {
-            const apiKey = 'U4ZfWmXB7qGSR9D4JvPz8RLAom0UZ02k';
-            const url = `https://api.tomorrow.io/v4/timelines?location=${latitude},${longitude}&fields=temperature&apikey=${apiKey}`;
-
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                const data = await response.json();
-                const currentTemp = data.data.timelines[0].intervals[0].values.temperature;
-                document.getElementById('location').textContent = `Location: Latitude ${latitude}, Longitude ${longitude}`;
-                document.getElementById('temperature').textContent = `Temperature: ${currentTemp} °C`;
-                document.getElementById('description').textContent = `Description: Data from Tomorrow.io`;
-            } catch (error) {
-                console.error('There was a problem with the fetch operation:', error);
-                document.getElementById('error').textContent = 'Error fetching weather data: Please try again later';
-            }
-        }
-
-        document.getElementById('weather-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const selectedOption = document.getElementById('city-select').value;
-            const [latitude, longitude] = selectedOption.split(',');
-            fetchWeather(latitude, longitude);
+        document.getElementById('weather-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var city = document.getElementById('city-select').value;
+            var apiKey = '972f9a349f7747858bb113631240806 ';
+            var apiUrl = 'https://api.weatherapi.com/v1/current.json?key=' + apiKey + '&q=' + city + '&aqi=no';
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    var location = data.location.name + ', ' + data.location.country;
+                    var temperature = data.current.temp_c + '°C';
+                    var description = data.current.condition.text;
+                    var wind = 'Wind: ' + data.current.wind_kph + ' kph ' + data.current.wind_dir;
+                    var humidity = 'Humidity: ' + data.current.humidity + '%';
+                    var cloud = 'Cloud: ' + data.current.cloud + '%';
+                    var pressure = 'Pressure: ' + data.current.pressure_mb + ' mb';
+                    var visibility = 'Visibility: ' + data.current.vis_km + ' km';
+                    var uv = 'UV Index: ' + data.current.uv;
+                    document.querySelector('.weather-container').classList.add('show');
+                    
+                    document.getElementById('location').textContent = location;
+                    document.getElementById('temperature').textContent = temperature;
+                    document.getElementById('description').textContent = description;
+                    document.getElementById('wind').textContent = wind;
+                    document.getElementById('humidity').textContent = humidity;
+                    document.getElementById('cloud').textContent = cloud;
+                    document.getElementById('pressure').textContent = pressure;
+                    document.getElementById('visibility').textContent = visibility;
+                    document.getElementById('uv').textContent = uv;
+                    document.getElementById('error').textContent = '';
+                })
+                .catch(error => {
+                    console.log('Error fetching weather data:', error);
+                    document.getElementById('location').textContent = 'Location: ';
+                    document.getElementById('temperature').textContent = 'Temperature: ';
+                    document.getElementById('description').textContent = 'Description: ';
+                    document.getElementById('wind').textContent = 'Wind: ';
+                    document.getElementById('humidity').textContent = 'Humidity: ';
+                    document.getElementById('cloud').textContent = 'Cloud: ';
+                    document.getElementById('pressure').textContent = 'Pressure: ';
+                    document.getElementById('visibility').textContent = 'Visibility: ';
+                    document.getElementById('uv').textContent = 'UV Index: ';
+                    document.getElementById('error').textContent = 'Error fetching weather data. Please try again later.';
+                });
         });
     </script>
+
 </body>
+
 </html>
