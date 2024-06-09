@@ -5,9 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
+    <link rel="icon" type="image/x-icon" href="https://i.postimg.cc/DyxfF97d/94765cc674ee3688fb3fa6478dc435aa-2.png">
+    
     <style>
-        body,
-        html {
+        body, html {
             margin: 0;
             padding: 0;
             height: 100%;
@@ -25,13 +26,12 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-            animation: fadeIn 2s ease;
+            animation: fadeIn 1s ease;
             max-width: 90%;
             width: 400px;
         }
 
-        .weather-container h1,
-        .weather-container h2 {
+        .weather-container h1, .weather-container h2 {
             margin: 0;
             color: #333;
         }
@@ -50,6 +50,9 @@
             margin: 10px 0;
             font-size: 1.2em;
             color: #555;
+            opacity: 0;
+            transform: translateX(-100%);
+            transition: all 0.5s ease;
         }
 
         #temperature {
@@ -63,8 +66,7 @@
             color: red;
         }
 
-        select,
-        input[type="submit"] {
+        select, input[type="submit"] {
             padding: 10px;
             font-size: 1em;
             margin-bottom: 10px;
@@ -92,7 +94,6 @@
                 opacity: 0;
                 transform: translateY(-20px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -113,10 +114,30 @@
                 font-size: 1em;
             }
 
-            input[type="submit"],
-            select {
+            input[type="submit"], select {
                 max-width: 100%;
             }
+        }
+
+        .weather-info-visible {
+            opacity: 1 !important;
+            transform: translateX(0) !important;
+        }
+
+        #loading-spinner {
+            display: none;
+            width: 50px;
+            height: 50px;
+            border: 8px solid rgba(0, 0, 0, 0.1);
+            border-top: 8px solid #2980b9;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -126,47 +147,71 @@
         <h1>Weather Info</h1>
         <h2>By Pavan</h2>
         <form id="weather-form" aria-label="Weather form">
+            <label for="city-select">Select a city:</label>
             <select id="city-select" aria-label="City selection">
-                <option value="27.1767,78.0081">Agra</option>
                 <option value="23.0225,72.5714">Ahmedabad</option>
                 <option value="25.4358,81.8463">Allahabad</option>
                 <option value="31.6340,74.8723">Amritsar</option>
+                <option value="23.2500,87.8667">Asansol</option>
                 <option value="19.8762,75.3433">Aurangabad</option>
-                <option value="12.9334,77.5609">Bangalore (Bengaluru)</option>
+                <option value="12.9716,77.6416">Bangalore</option>
+                <option value="28.2076,79.8267">Bareilly</option>
+                <option value="15.3173,75.7139">Belgaum</option>
+                <option value="25.2853,86.0739">Bhagalpur</option>
                 <option value="23.2599,77.4126">Bhopal</option>
                 <option value="30.7333,76.7794">Chandigarh</option>
                 <option value="13.0827,80.2707">Chennai</option>
+                <option value="21.7679,78.8718">Chhindwara</option>
                 <option value="11.0168,76.9558">Coimbatore</option>
                 <option value="28.6139,77.2090">Delhi</option>
+                <option value="26.1445,91.7362">Guwahati</option>
                 <option value="17.3850,78.4867">Hyderabad</option>
                 <option value="22.7196,75.8577">Indore</option>
                 <option value="26.9124,75.7873">Jaipur</option>
-                <option value="26.4499,80.3319">Kanpur</option>
+                <option value="12.8342,80.0430">Kanchipuram</option>
+                <option value="18.1124,79.0193">Karimnagar</option>
+                <option value="22.3167,87.3000">Kharagpur</option>
                 <option value="9.9312,76.2673">Kochi</option>
+                <option value="16.9886,73.1101">Kolhapur</option>
                 <option value="22.5726,88.3639">Kolkata</option>
+                <option value="15.8281,78.0373">Kurnool</option>
                 <option value="26.8467,80.9462">Lucknow</option>
                 <option value="30.9010,75.8573">Ludhiana</option>
+                <option value="9.9391,78.1217">Madurai</option>
+                <option value="12.3072,76.6496">Mandya</option>
                 <option value="19.0760,72.8777">Mumbai</option>
+                <option value="12.2958,76.6394">Mysore</option>
                 <option value="21.1458,79.0882">Nagpur</option>
+                <option value="19.9975,73.7898">Nashik</option>
+                <option value="13.6288,79.4192">Nellore</option>
+                <option value="10.8505,76.2711">Palakkad</option>
+                <option value="15.8503,74.4977">Panaji</option>
                 <option value="25.5941,85.1376">Patna</option>
                 <option value="18.5204,73.8567">Pune</option>
+                <option value="11.9139,79.8145">Puducherry</option>
+                <option value="17.3850,78.4867">Secunderabad</option>
+                <option value="26.0000,88.0000">Siliguri</option>
                 <option value="21.1702,72.8311">Surat</option>
+                <option value="19.2183,72.9781">Thane</option>
+                <option value="13.3611,74.7440">Udupi</option>
                 <option value="22.3072,73.1812">Vadodara</option>
                 <option value="25.3176,82.9739">Varanasi</option>
+                <option value="12.9260,79.1353">Vellore</option>
+                <option value="17.6868,83.2185">Visakhapatnam</option>
             </select>
             <input type="submit" value="Check Weather" aria-label="Check weather">
         </form>
-        <p id="loading" style="display: none;">Loading...</p>
-        <p id="location">Location: </p>
-        <p id="temperature">Temperature: </p>
-        <p id="description">Description: </p>
-        <p id="wind">Wind: </p>
-        <p id="humidity">Humidity: </p>
-        <p id="cloud">Cloud: </p>
-        <p id="pressure">Pressure: </p>
-        <p id="visibility">Visibility: </p>
-        <p id="uv">UV Index: </p>
-        <p id="error" class="error"></p>
+        <div id="loading-spinner"></div>
+        <p id="location" aria-live="polite">Location: </p>
+        <p id="temperature" aria-live="polite">Temperature: </p>
+        <p id="description" aria-live="polite">Description: </p>
+        <p id="wind" aria-live="polite">Wind: </p>
+        <p id="humidity" aria-live="polite">Humidity: </p>
+        <p id="cloud" aria-live="polite">Cloud: </p>
+        <p id="pressure" aria-live="polite">Pressure: </p>
+        <p id="visibility" aria-live="polite">Visibility: </p>
+        <p id="uv" aria-live="polite">UV Index: </p>
+        <p id="error" class="error" aria-live="polite"></p>
         <p>These results might not be accurate at the time</p>
     </div>
 
@@ -192,21 +237,27 @@
                     displayLoading(false);
                 })
                 .catch(error => {
-                    displayError('Error fetching weather data. Please try again later.');
+                    displayError(`Error: ${error.message}`);
                     displayLoading(false);
                 });
         });
 
         function displayLoading(isLoading) {
-            document.getElementById('loading').style.display = isLoading ? 'block' : 'none';
+            const spinner = document.getElementById('loading-spinner');
+            spinner.style.display = isLoading ? 'block' : 'none';
         }
 
         function clearWeatherInfo() {
             const fields = ['location', 'temperature', 'description', 'wind', 'humidity', 'cloud', 'pressure', 'visibility', 'uv', 'error'];
-            fields.forEach(field => document.getElementById(field).textContent = '');
+            fields.forEach(field => {
+                const element = document.getElementById(field);
+                element.textContent = '';
+                element.classList.remove('weather-info-visible');
+            });
         }
 
         function displayWeatherInfo(data) {
+            const fields = ['location', 'temperature', 'description', 'wind', 'humidity', 'cloud', 'pressure', 'visibility', 'uv'];
             document.getElementById('location').textContent = `Location: ${data.location.name}, ${data.location.country}`;
             document.getElementById('temperature').textContent = `Temperature: ${data.current.temp_c}°C`;
             document.getElementById('description').textContent = `Description: ${data.current.condition.text}`;
@@ -216,10 +267,17 @@
             document.getElementById('pressure').textContent = `Pressure: ${data.current.pressure_mb} mb`;
             document.getElementById('visibility').textContent = `Visibility: ${data.current.vis_km} km`;
             document.getElementById('uv').textContent = `UV Index: ${data.current.uv}`;
+
+            fields.forEach((field, index) => {
+                const element = document.getElementById(field);
+                setTimeout(() => element.classList.add('weather-info-visible'), index * 100);
+            });
         }
 
         function displayError(message) {
-            document.getElementById('error').textContent = message;
+            const errorElement = document.getElementById('error');
+            errorElement.textContent = message;
+            errorElement.classList.add('weather-info-visible');
         }
     </script>
 </body>
